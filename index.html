@@ -1,1 +1,1790 @@
 
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="manifest" href="manifest.json">
+
+<title>আমার হিসাব</title>
+
+<style>
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  font-family:Arial,"Noto Sans Bengali",sans-serif;
+  background:#f4f6f8;
+  color:#222;
+}
+
+header{
+  background:#1565c0;
+  color:white;
+  text-align:center;
+  padding:20px 10px;
+}
+
+header h1{
+  margin:0;
+  font-size:28px;
+}
+
+header p{
+  margin:5px 0 0;
+  font-size:14px;
+}
+
+.container{
+  max-width:700px;
+  margin:auto;
+  padding:12px;
+}
+
+.card{
+  background:white;
+  border-radius:14px;
+  padding:15px;
+  margin-bottom:14px;
+  box-shadow:0 2px 8px rgba(0,0,0,.08);
+}
+
+.card h2{
+  margin-top:0;
+  font-size:20px;
+}
+
+.dashboard{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+
+.box{
+  background:#fff;
+  padding:15px;
+  border-radius:12px;
+  box-shadow:0 2px 7px rgba(0,0,0,.08);
+  cursor:pointer;
+}
+
+.box:active{
+  transform:scale(.98);
+}
+
+.box small{
+  display:block;
+  color:#666;
+  margin-bottom:5px;
+}
+
+.box strong{
+  font-size:20px;
+}
+
+.income{
+  color:#087f23;
+}
+
+.expense{
+  color:#d32f2f;
+}
+
+.saving{
+  color:#1565c0;
+}
+
+.balance{
+  color:#6a1b9a;
+}
+
+.debt{
+  color:#e65100;
+}
+
+.remaining{
+  color:#c62828;
+}
+
+button{
+  border:0;
+  border-radius:9px;
+  padding:11px 14px;
+  margin:4px;
+  cursor:pointer;
+  background:#1565c0;
+  color:white;
+  font-size:15px;
+}
+
+button.danger{
+  background:#d32f2f;
+}
+
+button.success{
+  background:#2e7d32;
+}
+
+button.warning{
+  background:#ef6c00;
+}
+
+button.gray{
+  background:#616161;
+}
+
+input,select,textarea{
+  width:100%;
+  padding:11px;
+  margin:6px 0 10px;
+  border:1px solid #ccc;
+  border-radius:8px;
+  font-size:15px;
+}
+
+textarea{
+  min-height:70px;
+}
+
+.hidden{
+  display:none;
+}
+
+.actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:4px;
+}
+
+.transaction,
+.debt-item{
+  border:1px solid #ddd;
+  border-radius:10px;
+  padding:12px;
+  margin:8px 0;
+  background:#fafafa;
+}
+
+.transaction-title,
+.debt-title{
+  font-weight:bold;
+  font-size:17px;
+}
+
+.muted{
+  color:#666;
+  font-size:13px;
+}
+
+.amount{
+  font-size:18px;
+  font-weight:bold;
+  margin-top:5px;
+}
+
+.search-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+}
+
+.month-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+}
+
+.month-box{
+  background:#f5f5f5;
+  padding:12px;
+  border-radius:10px;
+  text-align:center;
+}
+
+.month-box strong{
+  display:block;
+  font-size:19px;
+  margin-top:5px;
+}
+
+.bar-wrap{
+  margin:10px 0;
+}
+
+.bar-label{
+  display:flex;
+  justify-content:space-between;
+  font-size:13px;
+  margin-bottom:3px;
+}
+
+.bar{
+  height:18px;
+  background:#e0e0e0;
+  border-radius:10px;
+  overflow:hidden;
+}
+
+.bar-fill{
+  height:100%;
+  border-radius:10px;
+}
+
+.income-bar{
+  background:#2e7d32;
+}
+
+.expense-bar{
+  background:#d32f2f;
+}
+
+.goal-progress{
+  height:18px;
+  background:#ddd;
+  border-radius:10px;
+  overflow:hidden;
+  margin:8px 0;
+}
+
+.goal-fill{
+  height:100%;
+  background:#1565c0;
+}
+
+.person-summary{
+  border:2px solid #ffcc80;
+  background:#fff8e1;
+  border-radius:12px;
+  padding:13px;
+  margin:10px 0;
+}
+
+.person-summary h3{
+  margin:0 0 10px;
+  color:#e65100;
+}
+
+.person-total{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:6px;
+  margin-bottom:10px;
+}
+
+.person-total div{
+  background:white;
+  border-radius:8px;
+  padding:8px;
+  text-align:center;
+  font-size:12px;
+}
+
+.person-total strong{
+  display:block;
+  font-size:16px;
+  margin-top:3px;
+}
+
+.sub-debt{
+  background:white;
+  border-radius:9px;
+  padding:10px;
+  margin-top:8px;
+  border-left:4px solid #ef6c00;
+}
+
+.payment-history{
+  margin-top:8px;
+  padding:8px;
+  background:#f5f5f5;
+  border-radius:8px;
+}
+
+.payment-row{
+  display:flex;
+  justify-content:space-between;
+  border-bottom:1px solid #ddd;
+  padding:5px 0;
+  font-size:13px;
+}
+
+.payment-row:last-child{
+  border-bottom:0;
+}
+
+.notice{
+  background:#e3f2fd;
+  color:#0d47a1;
+  padding:10px;
+  border-radius:8px;
+  margin-bottom:10px;
+  font-size:14px;
+}
+
+@media(max-width:500px){
+  .dashboard{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .search-grid{
+    grid-template-columns:1fr;
+  }
+
+  .person-total{
+    grid-template-columns:1fr 1fr 1fr;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>আমার হিসাব</h1>
+  <p>Amar Hisab — ব্যক্তিগত আয়, ব্যয়, সঞ্চয় ও দায় ব্যবস্থাপনা</p>
+</header>
+
+<div class="container">
+
+<div class="card">
+  <h2>📊 ড্যাশবোর্ড</h2>
+
+  <div class="dashboard">
+
+    <div class="box" onclick="dashboardClick('income')">
+      <small>মোট আয়</small>
+      <strong class="income" id="totalIncome">৳0</strong>
+    </div>
+
+    <div class="box" onclick="dashboardClick('expense')">
+      <small>মোট ব্যয়</small>
+      <strong class="expense" id="totalExpense">৳0</strong>
+    </div>
+
+    <div class="box" onclick="dashboardClick('saving')">
+      <small>মোট সঞ্চয়</small>
+      <strong class="saving" id="totalSaving">৳0</strong>
+    </div>
+
+    <div class="box" onclick="dashboardClick('balance')">
+      <small>বর্তমান ব্যালেন্স</small>
+      <strong class="balance" id="currentBalance">৳0</strong>
+    </div>
+
+    <div class="box" onclick="dashboardClick('debt')">
+      <small>মোট দায়</small>
+      <strong class="debt" id="totalDebt">৳0</strong>
+    </div>
+
+    <div class="box" onclick="dashboardClick('remaining')">
+      <small>বাকি দায়</small>
+      <strong class="remaining" id="remainingDebt">৳0</strong>
+    </div>
+
+  </div>
+</div>
+
+<div class="card">
+  <h2>➕ নতুন হিসাব</h2>
+
+  <div class="actions">
+    <button onclick="showIncome()">＋ আয় যোগ করুন</button>
+    <button onclick="showExpense()" class="danger">－ ব্যয় যোগ করুন</button>
+    <button onclick="showSaving()" class="success">🏦 দৈনিক সঞ্চয়</button>
+    <button onclick="showDebtForm()" class="warning">💳 দায় যোগ করুন</button>
+  </div>
+</div>
+
+<div class="card">
+  <h2>📅 চলতি মাস</h2>
+
+  <div class="month-grid">
+
+    <div class="month-box">
+      আয়
+      <strong class="income" id="monthIncome">৳0</strong>
+    </div>
+
+    <div class="month-box">
+      ব্যয়
+      <strong class="expense" id="monthExpense">৳0</strong>
+    </div>
+
+    <div class="month-box">
+      সঞ্চয়
+      <strong class="saving" id="monthSaving">৳0</strong>
+    </div>
+
+    <div class="month-box">
+      ব্যালেন্স
+      <strong class="balance" id="monthBalance">৳0</strong>
+    </div>
+
+  </div>
+
+  <div class="bar-wrap">
+    <div class="bar-label">
+      <span>আয়</span>
+      <span id="incomePercent">0%</span>
+    </div>
+    <div class="bar">
+      <div id="incomeBar" class="bar-fill income-bar" style="width:0%"></div>
+    </div>
+  </div>
+
+  <div class="bar-wrap">
+    <div class="bar-label">
+      <span>ব্যয়</span>
+      <span id="expensePercent">0%</span>
+    </div>
+    <div class="bar">
+      <div id="expenseBar" class="bar-fill expense-bar" style="width:0%"></div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <h2>🎯 দৈনিক সঞ্চয়ের লক্ষ্য</h2>
+
+  <div id="savingGoalText">লক্ষ্য নির্ধারণ করা হয়নি</div>
+
+  <div class="goal-progress">
+    <div id="goalFill" class="goal-fill" style="width:0%"></div>
+  </div>
+
+  <div class="muted" id="goalPercent">0%</div>
+
+  <button onclick="setSavingGoal()">🎯 লক্ষ্য নির্ধারণ</button>
+</div>
+
+<div class="card hidden" id="transactionForm">
+  <h2 id="formTitle">নতুন হিসাব</h2>
+
+  <label>তারিখ</label>
+  <input type="date" id="date">
+
+  <label>ধরন</label>
+  <select id="type">
+    <option value="income">আয়</option>
+    <option value="expense">ব্যয়</option>
+    <option value="saving">সঞ্চয়</option>
+  </select>
+
+  <label>ক্যাটাগরি</label>
+  <select id="category">
+    <option value="salary">বেতন</option>
+    <option value="freelancing">ফ্রিল্যান্সিং</option>
+    <option value="business">ব্যবসা</option>
+    <option value="other_income">অন্যান্য আয়</option>
+    <option value="market">বাজার</option>
+    <option value="rent">বাড়ি ভাড়া</option>
+    <option value="transport">যাতায়াত</option>
+    <option value="family">পরিবার</option>
+    <option value="installment">কিস্তি</option>
+    <option value="mobile">মোবাইল/ইন্টারনেট</option>
+    <option value="medical">চিকিৎসা</option>
+    <option value="other_expense">অন্যান্য ব্যয়</option>
+    <option value="daily_saving">দৈনিক সঞ্চয়</option>
+  </select>
+
+  <label>টাকার পরিমাণ</label>
+  <input type="number" id="amount" placeholder="যেমন: 500">
+
+  <label>নোট</label>
+  <textarea id="note" placeholder="প্রয়োজনে লিখুন"></textarea>
+
+  <button onclick="addTransaction()">💾 সংরক্ষণ</button>
+  <button onclick="closeForms()" class="gray">বন্ধ</button>
+</div>
+
+<div class="card hidden" id="debtForm">
+  <h2>💳 নতুন দায় যোগ করুন</h2>
+
+  <label>ব্যক্তির নাম</label>
+  <input type="text" id="debtPerson" placeholder="যেমন: রহিম">
+
+  <label>দায়ের পরিমাণ</label>
+  <input type="number" id="debtAmount" placeholder="যেমন: 10000">
+
+  <label>তারিখ</label>
+  <input type="date" id="debtDate">
+
+  <label>নোট</label>
+  <textarea id="debtNote" placeholder="দায়ের কারণ বা অন্য তথ্য"></textarea>
+
+  <button onclick="addDebt()" class="warning">💾 দায় সংরক্ষণ</button>
+  <button onclick="closeForms()" class="gray">বন্ধ</button>
+</div>
+
+<div class="card" id="transactionSection">
+  <h2>🔎 হিসাব খুঁজুন</h2>
+
+  <div class="search-grid">
+
+    <div>
+      <label>খুঁজুন</label>
+      <input
+        type="text"
+        id="searchText"
+        placeholder="ক্যাটাগরি / নোট / তারিখ"
+        oninput="filterTransactions()"
+      >
+    </div>
+
+    <div>
+      <label>ধরন</label>
+      <select id="filterType" onchange="filterTransactions()">
+        <option value="all">সব</option>
+        <option value="income">আয়</option>
+        <option value="expense">ব্যয়</option>
+        <option value="saving">সঞ্চয়</option>
+      </select>
+    </div>
+
+  </div>
+
+  <label>নির্দিষ্ট তারিখ</label>
+  <input type="date" id="filterDate" onchange="filterTransactions()">
+
+  <button onclick="clearFilters()" class="gray">ফিল্টার পরিষ্কার</button>
+
+  <div class="muted" id="transactionCount"></div>
+
+  <div id="transactionList"></div>
+</div>
+
+<div class="card" id="debtSection">
+  <h2>💳 দায় ব্যবস্থাপনা</h2>
+
+  <div class="notice">
+    একই ব্যক্তির নামে থাকা একাধিক দায় এখানে একসাথে দেখানো হবে।
+  </div>
+
+  <div id="debtList"></div>
+</div>
+
+<div class="card">
+  <h2>📈 মাসিক রিপোর্ট</h2>
+
+  <label>মাস নির্বাচন করুন</label>
+  <input type="month" id="reportMonth">
+
+  <button onclick="showReport()">রিপোর্ট দেখুন</button>
+
+  <div id="reportResult"></div>
+</div>
+
+<div class="card">
+  <h2>⚙️ সেটিংস</h2>
+  <p class="muted">
+    ভবিষ্যতে এখানে ব্যাকআপ, ডাটা এক্সপোর্ট, রিসেট ইত্যাদি যোগ করা যাবে।
+  </p>
+</div>
+
+</div>
+
+<script>
+
+let transactions =
+  JSON.parse(localStorage.getItem("amarHisab")) || [];
+
+let debts =
+  JSON.parse(localStorage.getItem("amarHisabDebts")) || [];
+
+function money(amount){
+  return "৳" + Number(amount || 0).toLocaleString("bn-BD");
+}
+
+function todayDate(){
+  let d = new Date();
+
+  let month = String(d.getMonth()+1).padStart(2,"0");
+  let day = String(d.getDate()).padStart(2,"0");
+
+  return d.getFullYear() + "-" + month + "-" + day;
+}
+
+function saveData(){
+  localStorage.setItem(
+    "amarHisab",
+    JSON.stringify(transactions)
+  );
+
+  localStorage.setItem(
+    "amarHisabDebts",
+    JSON.stringify(debts)
+  );
+}
+
+function escapeHtml(text){
+  return String(text || "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+}
+
+function calculateTotals(){
+
+  let income = 0;
+  let expense = 0;
+  let saving = 0;
+
+  transactions.forEach(item => {
+
+    let amount = Number(item.amount) || 0;
+
+    if(item.type === "income"){
+      income += amount;
+    }
+
+    if(item.type === "expense"){
+      expense += amount;
+    }
+
+    if(item.type === "saving"){
+      saving += amount;
+    }
+
+  });
+
+  let balance = income - expense - saving;
+
+  let totalDebt = 0;
+  let remainingDebt = 0;
+
+  debts.forEach(debt => {
+
+    let amount = Number(debt.amount) || 0;
+    let paid = Number(debt.paid) || 0;
+
+    totalDebt += amount;
+
+    remainingDebt += Math.max(0, amount - paid);
+
+  });
+
+  document.getElementById("totalIncome").innerText = money(income);
+  document.getElementById("totalExpense").innerText = money(expense);
+  document.getElementById("totalSaving").innerText = money(saving);
+  document.getElementById("currentBalance").innerText = money(balance);
+
+  document.getElementById("totalDebt").innerText = money(totalDebt);
+  document.getElementById("remainingDebt").innerText = money(remainingDebt);
+
+  updateCurrentMonth();
+}
+
+function updateCurrentMonth(){
+
+  let month =
+    new Date().getFullYear() +
+    "-" +
+    String(new Date().getMonth()+1).padStart(2,"0");
+
+  let income = 0;
+  let expense = 0;
+  let saving = 0;
+
+  transactions.forEach(item => {
+
+    if(!item.date || !item.date.startsWith(month)){
+      return;
+    }
+
+    let amount = Number(item.amount) || 0;
+
+    if(item.type === "income"){
+      income += amount;
+    }
+
+    if(item.type === "expense"){
+      expense += amount;
+    }
+
+    if(item.type === "saving"){
+      saving += amount;
+    }
+
+  });
+
+  let balance = income - expense - saving;
+
+  document.getElementById("monthIncome").innerText = money(income);
+  document.getElementById("monthExpense").innerText = money(expense);
+  document.getElementById("monthSaving").innerText = money(saving);
+  document.getElementById("monthBalance").innerText = money(balance);
+
+  let max = Math.max(income,expense,1);
+
+  let incomeWidth = (income / max) * 100;
+  let expenseWidth = (expense / max) * 100;
+
+  document.getElementById("incomeBar").style.width =
+    incomeWidth + "%";
+
+  document.getElementById("expenseBar").style.width =
+    expenseWidth + "%";
+
+  document.getElementById("incomePercent").innerText =
+    Math.round(incomeWidth) + "%";
+
+  document.getElementById("expensePercent").innerText =
+    Math.round(expenseWidth) + "%";
+}
+
+function dashboardClick(type){
+
+  if(type === "income"){
+    document.getElementById("filterType").value = "income";
+    document.getElementById("searchText").value = "";
+    document.getElementById("filterDate").value = "";
+    filterTransactions();
+    document.getElementById("transactionSection")
+      .scrollIntoView({behavior:"smooth"});
+    return;
+  }
+
+  if(type === "expense"){
+    document.getElementById("filterType").value = "expense";
+    document.getElementById("searchText").value = "";
+    document.getElementById("filterDate").value = "";
+    filterTransactions();
+    document.getElementById("transactionSection")
+      .scrollIntoView({behavior:"smooth"});
+    return;
+  }
+
+  if(type === "saving"){
+    document.getElementById("filterType").value = "saving";
+    document.getElementById("searchText").value = "";
+    document.getElementById("filterDate").value = "";
+    filterTransactions();
+    document.getElementById("transactionSection")
+      .scrollIntoView({behavior:"smooth"});
+    return;
+  }
+
+  if(type === "balance"){
+    document.getElementById("filterType").value = "all";
+    document.getElementById("searchText").value = "";
+    document.getElementById("filterDate").value = "";
+    filterTransactions();
+    document.getElementById("transactionSection")
+      .scrollIntoView({behavior:"smooth"});
+    return;
+  }
+
+  if(type === "debt"){
+    showDebts("all");
+    document.getElementById("debtSection")
+      .scrollIntoView({behavior:"smooth"});
+    return;
+  }
+
+  if(type === "remaining"){
+    showDebts("remaining");
+    document.getElementById("debtSection")
+      .scrollIntoView({behavior:"smooth"});
+    return;
+  }
+}
+
+function showIncome(){
+
+  document.getElementById("transactionForm")
+    .classList.remove("hidden");
+
+  document.getElementById("formTitle")
+    .innerText = "＋ আয় যোগ করুন";
+
+  document.getElementById("type").value = "income";
+
+  document.getElementById("date").value = todayDate();
+
+  window.scrollTo({
+    top:document.getElementById("transactionForm").offsetTop,
+    behavior:"smooth"
+  });
+}
+
+function showExpense(){
+
+  document.getElementById("transactionForm")
+    .classList.remove("hidden");
+
+  document.getElementById("formTitle")
+    .innerText = "－ ব্যয় যোগ করুন";
+
+  document.getElementById("type").value = "expense";
+
+  document.getElementById("date").value = todayDate();
+
+  window.scrollTo({
+    top:document.getElementById("transactionForm").offsetTop,
+    behavior:"smooth"
+  });
+}
+
+function showSaving(){
+
+  document.getElementById("transactionForm")
+    .classList.remove("hidden");
+
+  document.getElementById("formTitle")
+    .innerText = "🏦 দৈনিক সঞ্চয়";
+
+  document.getElementById("type").value = "saving";
+
+  document.getElementById("category").value = "daily_saving";
+
+  document.getElementById("date").value = todayDate();
+
+  window.scrollTo({
+    top:document.getElementById("transactionForm").offsetTop,
+    behavior:"smooth"
+  });
+}
+
+function closeForms(){
+
+  document.getElementById("transactionForm")
+    .classList.add("hidden");
+
+  document.getElementById("debtForm")
+    .classList.add("hidden");
+}
+
+function addTransaction(){
+
+  let date =
+    document.getElementById("date").value;
+
+  let type =
+    document.getElementById("type").value;
+
+  let category =
+    document.getElementById("category").value;
+
+  let amount =
+    Number(document.getElementById("amount").value);
+
+  let note =
+    document.getElementById("note").value.trim();
+
+  if(!date){
+    alert("তারিখ দিন");
+    return;
+  }
+
+  if(!amount || amount <= 0){
+    alert("সঠিক টাকার পরিমাণ দিন");
+    return;
+  }
+
+  transactions.push({
+
+    id:Date.now(),
+    date:date,
+    type:type,
+    category:category,
+    amount:amount,
+    note:note
+
+  });
+
+  saveData();
+  calculateTotals();
+  showTransactions();
+  updateSavingGoal();
+
+  document.getElementById("amount").value = "";
+  document.getElementById("note").value = "";
+
+  closeForms();
+
+  alert("হিসাব সফলভাবে সংরক্ষণ হয়েছে।");
+}
+
+function filterTransactions(){
+
+  let search =
+    document.getElementById("searchText")
+      .value
+      .toLowerCase()
+      .trim();
+
+  let type =
+    document.getElementById("filterType").value;
+
+  let date =
+    document.getElementById("filterDate").value;
+
+  let filtered =
+    transactions.filter(item => {
+
+      let text =
+        (
+          item.category +
+          " " +
+          item.note +
+          " " +
+          item.date
+        ).toLowerCase();
+
+      let searchOK =
+        !search || text.includes(search);
+
+      let typeOK =
+        type === "all" || item.type === type;
+
+      let dateOK =
+        !date || item.date === date;
+
+      return searchOK && typeOK && dateOK;
+
+    });
+
+  showTransactionList(filtered);
+}
+
+function clearFilters(){
+
+  document.getElementById("searchText").value = "";
+  document.getElementById("filterType").value = "all";
+  document.getElementById("filterDate").value = "";
+
+  showTransactions();
+}
+
+function showTransactions(){
+  showTransactionList(transactions);
+}
+
+function showTransactionList(list){
+
+  let container =
+    document.getElementById("transactionList");
+
+  document.getElementById("transactionCount").innerText =
+    "মোট হিসাব: " + list.length + "টি";
+
+  if(list.length === 0){
+
+    container.innerHTML =
+      "<p class='muted'>কোনো হিসাব পাওয়া যায়নি।</p>";
+
+    return;
+  }
+
+  let html = "";
+
+  let sorted =
+    [...list].sort((a,b) =>
+      b.date.localeCompare(a.date)
+    );
+
+  sorted.forEach(item => {
+
+    let typeText = "আয়";
+    let className = "income";
+
+    if(item.type === "expense"){
+      typeText = "ব্যয়";
+      className = "expense";
+    }
+
+    if(item.type === "saving"){
+      typeText = "সঞ্চয়";
+      className = "saving";
+    }
+
+    html += `
+
+      <div class="transaction">
+
+        <div class="transaction-title">
+          ${escapeHtml(item.category)}
+        </div>
+
+        <div class="muted">
+          ${escapeHtml(item.date)} • ${typeText}
+        </div>
+
+        <div class="amount ${className}">
+          ${money(item.amount)}
+        </div>
+
+        ${
+          item.note
+          ?
+          `<div class="muted">
+            নোট: ${escapeHtml(item.note)}
+          </div>`
+          :
+          ""
+        }
+
+        <div class="actions">
+
+          <button
+            onclick="editTransaction(${item.id})">
+            ✏️ এডিট
+          </button>
+
+          <button
+            class="danger"
+            onclick="deleteTransaction(${item.id})">
+            🗑️ ডিলিট
+          </button>
+
+        </div>
+
+      </div>
+
+    `;
+
+  });
+
+  container.innerHTML = html;
+}
+
+function deleteTransaction(id){
+
+  if(!confirm("এই হিসাবটি মুছে ফেলতে চান?")){
+    return;
+  }
+
+  transactions =
+    transactions.filter(item => item.id !== id);
+
+  saveData();
+  calculateTotals();
+  showTransactions();
+  updateSavingGoal();
+}
+
+function editTransaction(id){
+
+  let item =
+    transactions.find(x => x.id === id);
+
+  if(!item){
+    return;
+  }
+
+  let newDate =
+    prompt("তারিখ লিখুন:",item.date);
+
+  if(newDate === null){
+    return;
+  }
+
+  let newAmount =
+    prompt("টাকার পরিমাণ লিখুন:",item.amount);
+
+  if(newAmount === null){
+    return;
+  }
+
+  newAmount = Number(newAmount);
+
+  if(!newAmount || newAmount <= 0){
+    alert("সঠিক টাকার পরিমাণ দিন");
+    return;
+  }
+
+  let newCategory =
+    prompt("ক্যাটাগরি লিখুন:",item.category);
+
+  if(newCategory === null){
+    return;
+  }
+
+  let newNote =
+    prompt("নোট লিখুন:",item.note || "");
+
+  if(newNote === null){
+    return;
+  }
+
+  item.date = newDate;
+  item.amount = newAmount;
+  item.category = newCategory;
+  item.note = newNote;
+
+  saveData();
+  calculateTotals();
+  showTransactions();
+  updateSavingGoal();
+}
+
+function setSavingGoal(){
+
+  let goal =
+    prompt(
+      "প্রতিদিন কত টাকা সঞ্চয়ের লক্ষ্য?",
+      localStorage.getItem("savingGoal") || ""
+    );
+
+  if(goal === null){
+    return;
+  }
+
+  goal = Number(goal);
+
+  if(!goal || goal <= 0){
+    alert("সঠিক লক্ষ্য দিন");
+    return;
+  }
+
+  localStorage.setItem(
+    "savingGoal",
+    goal
+  );
+
+  updateSavingGoal();
+}
+
+function getTodaySaving(){
+
+  let today = todayDate();
+
+  let total = 0;
+
+  transactions.forEach(item => {
+
+    if(
+      item.date === today &&
+      item.type === "saving"
+    ){
+
+      total += Number(item.amount) || 0;
+
+    }
+
+  });
+
+  return total;
+}
+
+function updateSavingGoal(){
+
+  let goal =
+    Number(localStorage.getItem("savingGoal")) || 0;
+
+  let todaySaving =
+    getTodaySaving();
+
+  if(!goal){
+
+    document.getElementById("savingGoalText")
+      .innerText =
+      "লক্ষ্য নির্ধারণ করা হয়নি";
+
+    document.getElementById("goalFill")
+      .style.width = "0%";
+
+    document.getElementById("goalPercent")
+      .innerText = "0%";
+
+    return;
+  }
+
+  let percent =
+    Math.min(
+      100,
+      Math.round((todaySaving / goal) * 100)
+    );
+
+  document.getElementById("savingGoalText")
+    .innerText =
+    "আজকের সঞ্চয়: " +
+    money(todaySaving) +
+    " / লক্ষ্য: " +
+    money(goal);
+
+  document.getElementById("goalFill")
+    .style.width = percent + "%";
+
+  document.getElementById("goalPercent")
+    .innerText = percent + "%";
+}
+
+function showDebtForm(){
+
+  document.getElementById("debtForm")
+    .classList.remove("hidden");
+
+  document.getElementById("debtDate")
+    .value = todayDate();
+
+  window.scrollTo({
+    top:document.getElementById("debtForm").offsetTop,
+    behavior:"smooth"
+  });
+}
+
+function addDebt(){
+
+  let person =
+    document.getElementById("debtPerson")
+      .value.trim();
+
+  let amount =
+    Number(
+      document.getElementById("debtAmount")
+        .value
+    );
+
+  let date =
+    document.getElementById("debtDate")
+      .value;
+
+  let note =
+    document.getElementById("debtNote")
+      .value.trim();
+
+  if(!person){
+    alert("ব্যক্তির নাম দিন");
+    return;
+  }
+
+  if(!amount || amount <= 0){
+    alert("সঠিক দায়ের পরিমাণ দিন");
+    return;
+  }
+
+  debts.push({
+
+    id:Date.now(),
+    person:person,
+    amount:amount,
+    paid:0,
+    date:date,
+    note:note,
+    payments:[]
+
+  });
+
+  saveData();
+  calculateTotals();
+  showDebts();
+
+  document.getElementById("debtPerson").value = "";
+  document.getElementById("debtAmount").value = "";
+  document.getElementById("debtNote").value = "";
+
+  closeForms();
+
+  alert("দায় সফলভাবে সংরক্ষণ হয়েছে।");
+}
+
+function showDebts(filter="all"){
+
+  let container =
+    document.getElementById("debtList");
+
+  let filteredDebts =
+    debts.filter(debt => {
+
+      let amount =
+        Number(debt.amount) || 0;
+
+      let paid =
+        Number(debt.paid) || 0;
+
+      let remaining =
+        Math.max(0,amount-paid);
+
+      if(filter === "remaining"){
+        return remaining > 0;
+      }
+
+      return true;
+
+    });
+
+  if(filteredDebts.length === 0){
+
+    container.innerHTML =
+      "<p class='muted'>কোনো দায় পাওয়া যায়নি।</p>";
+
+    return;
+  }
+
+  let groups = {};
+
+  filteredDebts.forEach(debt => {
+
+    let person =
+      (debt.person || "নাম নেই").trim();
+
+    let key =
+      person.toLowerCase();
+
+    if(!groups[key]){
+
+      groups[key] = {
+
+        person:person,
+        debts:[]
+
+      };
+
+    }
+
+    groups[key].debts.push(debt);
+
+  });
+
+  let html = "";
+
+  Object.values(groups).forEach(group => {
+
+    let totalAmount = 0;
+    let totalPaid = 0;
+    let totalRemaining = 0;
+
+    group.debts.forEach(debt => {
+
+      let amount =
+        Number(debt.amount) || 0;
+
+      let paid =
+        Number(debt.paid) || 0;
+
+      let remaining =
+        Math.max(0,amount-paid);
+
+      totalAmount += amount;
+      totalPaid += paid;
+      totalRemaining += remaining;
+
+    });
+
+    html += `
+
+      <div class="person-summary">
+
+        <h3>
+          👤 ${escapeHtml(group.person)}
+        </h3>
+
+        <div class="person-total">
+
+          <div>
+            মোট দায়
+            <strong class="debt">
+              ${money(totalAmount)}
+            </strong>
+          </div>
+
+          <div>
+            পরিশোধ
+            <strong class="income">
+              ${money(totalPaid)}
+            </strong>
+          </div>
+
+          <div>
+            মোট বাকি
+            <strong class="remaining">
+              ${money(totalRemaining)}
+            </strong>
+          </div>
+
+        </div>
+
+        <div class="muted">
+          এই ব্যক্তির মোট দায়: ${group.debts.length}টি
+        </div>
+
+    `;
+
+    group.debts.forEach(debt => {
+
+      let amount =
+        Number(debt.amount) || 0;
+
+      let paid =
+        Number(debt.paid) || 0;
+
+      let remaining =
+        Math.max(0,amount-paid);
+
+      if(!Array.isArray(debt.payments)){
+        debt.payments = [];
+      }
+
+      html += `
+
+        <div class="sub-debt">
+
+          <div class="debt-title">
+            💳 দায় — ${escapeHtml(debt.date)}
+          </div>
+
+          <div>
+            মোট দায়:
+            <strong>${money(amount)}</strong>
+          </div>
+
+          <div class="income">
+            পরিশোধ:
+            <strong>${money(paid)}</strong>
+          </div>
+
+          <div class="remaining">
+            বাকি:
+            <strong>${money(remaining)}</strong>
+          </div>
+
+          ${
+            debt.note
+            ?
+            `<div class="muted">
+              নোট: ${escapeHtml(debt.note)}
+            </div>`
+            :
+            ""
+          }
+
+          ${
+            debt.payments.length > 0
+            ?
+            `
+            <div class="payment-history">
+
+              <strong>📜 পরিশোধের ইতিহাস</strong>
+
+              ${
+                debt.payments.map(payment => `
+
+                  <div class="payment-row">
+
+                    <span>
+                      ${escapeHtml(payment.date)}
+                    </span>
+
+                    <strong class="income">
+                      ${money(payment.amount)}
+                    </strong>
+
+                  </div>
+
+                `).join("")
+              }
+
+            </div>
+            `
+            :
+            (
+              paid > 0
+              ?
+              `
+              <div class="payment-history muted">
+                আগের সংস্করণে পরিশোধ করা হয়েছে।
+                সেই পরিশোধের তারিখ সংরক্ষিত ছিল না।
+              </div>
+              `
+              :
+              ""
+            )
+          }
+
+          <div class="actions">
+
+            ${
+              remaining > 0
+              ?
+              `
+              <button
+                class="success"
+                onclick="payDebt(${debt.id})">
+                💰 টাকা পরিশোধ
+              </button>
+              `
+              :
+              `
+              <button
+                class="gray"
+                disabled>
+                ✅ সম্পূর্ণ পরিশোধ
+              </button>
+              `
+            }
+
+            <button
+              class="danger"
+              onclick="deleteDebt(${debt.id})">
+              🗑️ দায় মুছুন
+            </button>
+
+          </div>
+
+        </div>
+
+      `;
+
+    });
+
+    html += `</div>`;
+
+  });
+
+  container.innerHTML = html;
+
+  saveData();
+}
+
+function payDebt(id){
+
+  let debt =
+    debts.find(x => x.id === id);
+
+  if(!debt){
+    return;
+  }
+
+  let amount =
+    Number(debt.amount) || 0;
+
+  let paid =
+    Number(debt.paid) || 0;
+
+  let remaining =
+    Math.max(0,amount-paid);
+
+  if(remaining <= 0){
+
+    alert("এই দায় ইতিমধ্যে সম্পূর্ণ পরিশোধ করা হয়েছে।");
+
+    return;
+  }
+
+  let payment =
+    prompt(
+      "কত টাকা পরিশোধ করেছেন?\nবাকি: " +
+      money(remaining),
+      remaining
+    );
+
+  if(payment === null){
+    return;
+  }
+
+  payment = Number(payment);
+
+  if(!payment || payment <= 0){
+
+    alert("সঠিক টাকার পরিমাণ দিন");
+
+    return;
+  }
+
+  if(payment > remaining){
+
+    alert(
+      "বাকি দায়ের চেয়ে বেশি টাকা দেওয়া যাবে না।\n" +
+      "বর্তমান বাকি: " +
+      money(remaining)
+    );
+
+    return;
+  }
+
+  debt.paid =
+    paid + payment;
+
+  if(!Array.isArray(debt.payments)){
+    debt.payments = [];
+  }
+
+  debt.payments.push({
+
+    id:Date.now(),
+    date:todayDate(),
+    amount:payment
+
+  });
+
+  saveData();
+  calculateTotals();
+  showDebts();
+
+  alert(
+    "পরিশোধ সফল হয়েছে।\n\n" +
+    "পরিশোধ: " + money(payment) +
+    "\nনতুন বাকি: " +
+    money(remaining-payment)
+  );
+}
+
+function deleteDebt(id){
+
+  if(!confirm(
+    "এই দায় এবং এর পরিশোধের ইতিহাস মুছে ফেলতে চান?"
+  )){
+    return;
+  }
+
+  debts =
+    debts.filter(x => x.id !== id);
+
+  saveData();
+  calculateTotals();
+  showDebts();
+}
+
+function showReport(){
+
+  let month =
+    document.getElementById("reportMonth").value;
+
+  if(!month){
+
+    alert("মাস নির্বাচন করুন");
+
+    return;
+  }
+
+  let income = 0;
+  let expense = 0;
+  let saving = 0;
+
+  let categoryTotals = {};
+
+  transactions.forEach(item => {
+
+    if(!item.date || !item.date.startsWith(month)){
+      return;
+    }
+
+    let amount =
+      Number(item.amount) || 0;
+
+    if(item.type === "income"){
+      income += amount;
+    }
+
+    if(item.type === "expense"){
+
+      expense += amount;
+
+      if(!categoryTotals[item.category]){
+        categoryTotals[item.category] = 0;
+      }
+
+      categoryTotals[item.category] += amount;
+
+    }
+
+    if(item.type === "saving"){
+      saving += amount;
+    }
+
+  });
+
+  let balance =
+    income - expense - saving;
+
+  let html = `
+
+    <div class="card">
+
+      <h3>📊 ${month} রিপোর্ট</h3>
+
+      <p>
+        মোট আয়:
+        <strong class="income">
+          ${money(income)}
+        </strong>
+      </p>
+
+      <p>
+        মোট ব্যয়:
+        <strong class="expense">
+          ${money(expense)}
+        </strong>
+      </p>
+
+      <p>
+        মোট সঞ্চয়:
+        <strong class="saving">
+          ${money(saving)}
+        </strong>
+      </p>
+
+      <p>
+        ব্যালেন্স:
+        <strong class="balance">
+          ${money(balance)}
+        </strong>
+      </p>
+
+      <hr>
+
+      <h3>ব্যয়ের ক্যাটাগরি</h3>
+
+  `;
+
+  let categories =
+    Object.keys(categoryTotals);
+
+  if(categories.length === 0){
+
+    html +=
+      "<p class='muted'>এই মাসে কোনো ব্যয় নেই।</p>";
+
+  }else{
+
+    categories.forEach(category => {
+
+      html += `
+
+        <p>
+          ${escapeHtml(category)}
+          :
+          <strong class="expense">
+            ${money(categoryTotals[category])}
+          </strong>
+        </p>
+
+      `;
+
+    });
+
+  }
+
+  html += `</div>`;
+
+  document.getElementById("reportResult")
+    .innerHTML = html;
+}
+
+document.getElementById("date").value =
+  todayDate();
+
+document.getElementById("debtDate").value =
+  todayDate();
+
+document.getElementById("reportMonth").value =
+  new Date().toISOString().slice(0,7);
+
+calculateTotals();
+
+showTransactions();
+
+showDebts();
+
+updateSavingGoal();
+
+</script>
+
+</body>
+</html>
